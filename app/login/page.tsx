@@ -81,15 +81,7 @@ export default function LoginPage() {
                 </Alert>
               )}
 
-              <Alert>
-                <AlertDescription className="text-sm">
-                  <strong>Test Credentials:</strong>
-                  <br />
-                  Email: admin@poultry.com
-                  <br />
-                  Password: Admin123!
-                </AlertDescription>
-              </Alert>
+             
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
