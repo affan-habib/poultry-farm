@@ -15,8 +15,8 @@ import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("affan.habib44@gmail.com")
+  const [password, setPassword] = useState("12345678")
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
