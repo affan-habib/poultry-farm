@@ -175,67 +175,6 @@ export function DashboardClient({
         </div>
       </div>
 
-      {/* Quick Actions Panel */}
-      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Activity className="h-5 w-5" />
-            Quick Actions
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">Frequently used operations</p>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Link href="/production">
-              <Button variant="outline" className="w-full justify-start gap-2 h-auto py-3 bg-transparent" size="lg">
-                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-green-500/10">
-                  <Plus className="h-4 w-4 text-green-600" />
-                </div>
-                <div className="text-left">
-                  <div className="font-medium text-sm">Add Production</div>
-                  <div className="text-xs text-muted-foreground">Record new output</div>
-                </div>
-              </Button>
-            </Link>
-
-            <Link href="/sales">
-              <Button variant="outline" className="w-full justify-start gap-2 h-auto py-3 bg-transparent" size="lg">
-                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500/10">
-                  <ShoppingBag className="h-4 w-4 text-blue-600" />
-                </div>
-                <div className="text-left">
-                  <div className="font-medium text-sm">Record Sale</div>
-                  <div className="text-xs text-muted-foreground">New transaction</div>
-                </div>
-              </Button>
-            </Link>
-
-            <Link href="/expenses">
-              <Button variant="outline" className="w-full justify-start gap-2 h-auto py-3 bg-transparent" size="lg">
-                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-500/10">
-                  <FileText className="h-4 w-4 text-orange-600" />
-                </div>
-                <div className="text-left">
-                  <div className="font-medium text-sm">Add Expense</div>
-                  <div className="text-xs text-muted-foreground">Track spending</div>
-                </div>
-              </Button>
-            </Link>
-
-            <Link href="/animals">
-              <Button variant="outline" className="w-full justify-start gap-2 h-auto py-3 bg-transparent" size="lg">
-                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-500/10">
-                  <Bird className="h-4 w-4 text-purple-600" />
-                </div>
-                <div className="text-left">
-                  <div className="font-medium text-sm">Add Animal</div>
-                  <div className="text-xs text-muted-foreground">Register livestock</div>
-                </div>
-              </Button>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Key Metrics Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
