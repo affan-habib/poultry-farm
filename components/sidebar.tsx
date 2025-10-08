@@ -36,7 +36,7 @@ const navigation = [
 
 interface SidebarProps {
   isCollapsed?: boolean
-  onToggle?: () => void
+  onToggle: () => void
 }
 
 export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
@@ -47,27 +47,13 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
       "flex h-full flex-col bg-card border-r border-border transition-all duration-300",
       isCollapsed ? "w-16" : "w-64"
     )}>
-      <div className="flex h-16 items-center justify-between px-3 border-b border-border">
+      <div className="flex h-16 items-center justify-center px-3 border-b border-border">
         <div className="flex items-center gap-2">
           <Bird className="h-8 w-8 text-primary flex-shrink-0" />
           {!isCollapsed && (
             <span className="text-xl font-bold text-foreground">FarmPro</span>
           )}
         </div>
-        {onToggle && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onToggle}
-            className="h-8 w-8 p-0"
-          >
-            {isCollapsed ? (
-              <ChevronRight className="h-4 w-4" />
-            ) : (
-              <ChevronLeft className="h-4 w-4" />
-            )}
-          </Button>
-        )}
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
@@ -92,23 +78,6 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
           )
         })}
       </nav>
-
-      <div className="border-t border-border p-4">
-        <div className={cn(
-          "flex items-center gap-3",
-          isCollapsed && "justify-center"
-        )}>
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary flex-shrink-0">
-            <User className="h-4 w-4 text-primary-foreground" />
-          </div>
-          {!isCollapsed && (
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground">Farm Owner</p>
-              <p className="text-xs text-muted-foreground">admin@farm.com</p>
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   )
 }
