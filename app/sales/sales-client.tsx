@@ -25,28 +25,7 @@ import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
-type SalesRecord = {
-  id: string
-  sale_date: string
-  vendor_id: string | null
-  product_type: string
-  quantity: number
-  unit: string
-  unit_price: number
-  total_amount: number
-  payment_method: string
-  payment_status: string
-  invoice_number: string | null
-  notes: string | null
-  vendors?: { name: string } | null
-}
-
-type Vendor = {
-  id: string
-  name: string
-  contact_person: string | null
-  phone: string | null
-}
+import { SalesRecord, Vendor } from "@/types/sales"
 
 type SalesClientProps = {
   initialSales: SalesRecord[]

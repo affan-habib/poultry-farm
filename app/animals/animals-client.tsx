@@ -25,26 +25,7 @@ import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
-type Animal = {
-  id: string
-  tag_number: string
-  breed: string
-  animal_type: string
-  age_months: number | null
-  weight_kg: number | null
-  health_status: string
-  location: string | null
-  date_acquired: string
-  purchase_price: number | null
-  vendor_id: string | null
-  notes: string | null
-  vendors?: { name: string } | null
-}
-
-type Vendor = {
-  id: string
-  name: string
-}
+import { Animal, Vendor } from "@/types/animal"
 
 type AnimalsClientProps = {
   initialAnimals: Animal[]

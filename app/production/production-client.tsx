@@ -23,17 +23,7 @@ import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
-type ProductionRecord = {
-  id: string
-  production_date: string
-  product_type: string
-  quantity: number
-  unit: string
-  quality_grade: string | null
-  batch_number: string | null
-  notes: string | null
-  created_at: string
-}
+import { ProductionRecord } from "@/types/production"
 
 type ProductionClientProps = {
   initialProduction: ProductionRecord[]

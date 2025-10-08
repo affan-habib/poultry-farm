@@ -16,6 +16,7 @@ import {
   Users as UsersIcon,
   ChevronLeft,
   ChevronRight,
+  Store,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -29,6 +30,7 @@ const navigation = [
   { name: "Income", href: "/income", icon: TrendingUp },
   { name: "Reports", href: "/reports", icon: FileText },
   { name: "Employees", href: "/employees", icon: UsersIcon },
+  { name: "Vendors", href: "/vendors", icon: Store },
   { name: "Settings", href: "/settings", icon: Settings },
 ]
 

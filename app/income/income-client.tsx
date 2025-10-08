@@ -24,17 +24,7 @@ import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
-type IncomeRecord = {
-  id: string
-  income_date: string
-  source: string
-  description: string
-  amount: number
-  customer_name: string | null
-  payment_method: string
-  reference_number: string | null
-  notes: string | null
-}
+import { IncomeRecord } from "@/types/income"
 
 type IncomeClientProps = {
   initialIncome: IncomeRecord[]

@@ -25,23 +25,7 @@ import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
-type ExpenseRecord = {
-  id: string
-  expense_date: string
-  category: string
-  description: string
-  amount: number
-  vendor_id: string | null
-  payment_method: string
-  receipt_number: string | null
-  notes: string | null
-  vendors?: { name: string } | null
-}
-
-type Vendor = {
-  id: string
-  name: string
-}
+import { ExpenseRecord, Vendor } from "@/types/expense"
 
 type ExpensesClientProps = {
   initialExpenses: ExpenseRecord[]
