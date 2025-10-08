@@ -21,6 +21,7 @@ import { Plus, Search, Edit, Trash2, Package, Egg, Beef } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
+import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
 type ProductionRecord = {
   id: string
@@ -48,6 +49,15 @@ export function ProductionClient({ initialProduction }: ProductionClientProps) {
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const router = useRouter()
   const supabase = createClient()
+
+  const fetchProduction = async () => {
+    const { data, error } = await supabase.from("production").select("*,vendors(*)").order("production_date", { ascending: false })
+    if (error) {
+      console.error("Error fetching production records:", error)
+    } else {
+      setProduction(data)
+    }
+  }
 
   const [formData, setFormData] = useState({
     production_date: new Date().toISOString().split("T")[0],
@@ -126,8 +136,9 @@ export function ProductionClient({ initialProduction }: ProductionClientProps) {
 
         if (error) throw error
       }
-
+ 
       handleCloseDialog()
+      await fetchProduction() // Re-fetch data after successful CRUD
       router.refresh()
     } catch (error) {
       console.error("Error saving production record:", error)
@@ -135,16 +146,14 @@ export function ProductionClient({ initialProduction }: ProductionClientProps) {
       setIsLoading(false)
     }
   }
-
+ 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this production record?")) return
-
     try {
       const { error } = await supabase.from("production").delete().eq("id", id)
 
       if (error) throw error
 
-      setProduction(production.filter((p) => p.id !== id))
+      await fetchProduction() // Re-fetch data after successful delete
       router.refresh()
     } catch (error) {
       console.error("Error deleting production record:", error)
@@ -294,14 +303,19 @@ export function ProductionClient({ initialProduction }: ProductionClientProps) {
                         <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(record)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(record.id)}
-                          className="text-red-500 hover:text-red-700"
+                        <ConfirmationModal
+                          title="Confirm Deletion"
+                          description="Are you sure you want to delete this production record? This action cannot be undone."
+                          onConfirm={() => handleDelete(record.id)}
                         >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </ConfirmationModal>
                       </div>
                     </TableCell>
                   </TableRow>

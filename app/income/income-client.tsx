@@ -22,6 +22,7 @@ import { Plus, Search, Edit, Trash2, TrendingUp, Calendar, DollarSign, BookUser 
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
+import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
 type IncomeRecord = {
   id: string
@@ -49,6 +50,15 @@ export function IncomeClient({ initialIncome }: IncomeClientProps) {
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const router = useRouter()
   const supabase = createClient()
+
+  const fetchIncome = async () => {
+    const { data, error } = await supabase.from("income").select("*").order("income_date", { ascending: false })
+    if (error) {
+      console.error("Error fetching income records:", error)
+    } else {
+      setIncome(data)
+    }
+  }
 
   const [formData, setFormData] = useState({
     income_date: new Date().toISOString().split("T")[0],
@@ -129,8 +139,9 @@ export function IncomeClient({ initialIncome }: IncomeClientProps) {
         const { error } = await supabase.from("income").insert([incomeData])
         if (error) throw error
       }
-
+ 
       handleCloseDialog()
+      await fetchIncome() // Re-fetch data after successful CRUD
       router.refresh()
     } catch (error) {
       console.error("Error saving income:", error)
@@ -138,16 +149,14 @@ export function IncomeClient({ initialIncome }: IncomeClientProps) {
       setIsLoading(false)
     }
   }
-
+ 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this income record?")) return
-
     try {
       const { error } = await supabase.from("income").delete().eq("id", id)
 
       if (error) throw error
 
-      setIncome(income.filter((i) => i.id !== id))
+      await fetchIncome() // Re-fetch data after successful delete
       router.refresh()
     } catch (error) {
       console.error("Error deleting income:", error)
@@ -309,14 +318,19 @@ export function IncomeClient({ initialIncome }: IncomeClientProps) {
                         <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(record)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(record.id)}
-                          className="text-red-500 hover:text-red-700"
+                        <ConfirmationModal
+                          title="Confirm Deletion"
+                          description="Are you sure you want to delete this income record? This action cannot be undone."
+                          onConfirm={() => handleDelete(record.id)}
                         >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </ConfirmationModal>
                       </div>
                     </TableCell>
                   </TableRow>

@@ -22,6 +22,7 @@ import { Plus, Search, Edit, Trash2, Users, Briefcase, Phone, Mail } from "lucid
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { formatCurrency } from "@/lib/currency"
+import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
 type Employee = {
   id: string
@@ -47,6 +48,15 @@ export function EmployeesClient({ initialEmployees }: EmployeesClientProps) {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+
+  const fetchEmployees = async () => {
+    const { data, error } = await supabase.from("employees").select("*").order("hire_date", { ascending: false })
+    if (error) {
+      console.error("Error fetching employees:", error)
+    } else {
+      setEmployees(data)
+    }
+  }
 
   const [formData, setFormData] = useState({
     name: "",
@@ -127,23 +137,22 @@ export function EmployeesClient({ initialEmployees }: EmployeesClientProps) {
         const { error } = await supabase.from("employees").insert([employeeData])
         if (error) throw error
       }
-
-      handleCloseDialog()
-      router.refresh()
-    } catch (error) {
-      console.error("Error saving employee:", error)
+ 
+       handleCloseDialog()
+       await fetchEmployees() // Re-fetch data after successful CRUD
+       router.refresh()
+     } catch (error) {
+       console.error("Error saving employee:", error)
     } finally {
       setIsLoading(false)
     }
   }
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this employee?")) return
-
-    try {
-      const { error } = await supabase.from("employees").delete().eq("id", id)
+ 
+   const handleDelete = async (id: string) => {
+     try {
+       const { error } = await supabase.from("employees").delete().eq("id", id)
       if (error) throw error
-      setEmployees(employees.filter((e) => e.id !== id))
+      await fetchEmployees() // Re-fetch data after successful delete
       router.refresh()
     } catch (error) {
       console.error("Error deleting employee:", error)
@@ -238,14 +247,19 @@ export function EmployeesClient({ initialEmployees }: EmployeesClientProps) {
                         <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(employee)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(employee.id)}
-                          className="text-red-500 hover:text-red-700"
+                        <ConfirmationModal
+                          title="Confirm Deletion"
+                          description="Are you sure you want to delete this employee? This action cannot be undone."
+                          onConfirm={() => handleDelete(employee.id)}
                         >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </ConfirmationModal>
                       </div>
                     </TableCell>
                   </TableRow>

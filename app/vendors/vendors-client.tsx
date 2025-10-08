@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Plus, Search, Edit, Trash2, Store, Users, ShoppingCart } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
+import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
 type Vendor = {
   id: string
@@ -49,6 +50,15 @@ export function VendorsClient({ initialVendors }: VendorsClientProps) {
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const router = useRouter()
   const supabase = createClient()
+
+  const fetchVendors = async () => {
+    const { data, error } = await supabase.from("vendors").select("*").order("name", { ascending: true })
+    if (error) {
+      console.error("Error fetching vendors:", error)
+    } else {
+      setVendors(data)
+    }
+  }
 
   // Form state
   const [formData, setFormData] = useState({
@@ -142,8 +152,9 @@ export function VendorsClient({ initialVendors }: VendorsClientProps) {
 
         setVendors([data, ...vendors])
       }
-
+ 
       handleCloseDialog()
+      await fetchVendors() // Re-fetch data after successful CRUD
       router.refresh()
     } catch (error) {
       console.error("Error saving vendor:", error)
@@ -151,16 +162,14 @@ export function VendorsClient({ initialVendors }: VendorsClientProps) {
       setIsLoading(false)
     }
   }
-
+ 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this vendor?")) return
-
     try {
       const { error } = await supabase.from("vendors").delete().eq("id", id)
 
       if (error) throw error
 
-      setVendors(vendors.filter((v) => v.id !== id))
+      await fetchVendors() // Re-fetch data after successful delete
       router.refresh()
     } catch (error) {
       console.error("Error deleting vendor:", error)
@@ -320,9 +329,15 @@ export function VendorsClient({ initialVendors }: VendorsClientProps) {
                         <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(vendor)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleDelete(vendor.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <ConfirmationModal
+                          title="Confirm Deletion"
+                          description="Are you sure you want to delete this vendor? This action cannot be undone."
+                          onConfirm={() => handleDelete(vendor.id)}
+                        >
+                          <Button variant="ghost" size="sm">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </ConfirmationModal>
                       </div>
                     </TableCell>
                   </TableRow>

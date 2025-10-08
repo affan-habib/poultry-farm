@@ -23,6 +23,7 @@ import { Plus, Search, Edit, Trash2, TrendingDown, Receipt, Calendar, DollarSign
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
+import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
 type ExpenseRecord = {
   id: string
@@ -57,6 +58,15 @@ export function ExpensesClient({ initialExpenses, vendors }: ExpensesClientProps
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const router = useRouter()
   const supabase = createClient()
+
+  const fetchExpenses = async () => {
+    const { data, error } = await supabase.from("expenses").select("*, vendors(*)").order("expense_date", { ascending: false })
+    if (error) {
+      console.error("Error fetching expenses:", error)
+    } else {
+      setExpenses(data)
+    }
+  }
 
   const [formData, setFormData] = useState({
     expense_date: new Date().toISOString().split("T")[0],
@@ -139,8 +149,9 @@ export function ExpensesClient({ initialExpenses, vendors }: ExpensesClientProps
 
         if (error) throw error
       }
-
+ 
       handleCloseDialog()
+      await fetchExpenses() // Re-fetch data after successful CRUD
       router.refresh()
     } catch (error) {
       console.error("Error saving expense:", error)
@@ -148,16 +159,14 @@ export function ExpensesClient({ initialExpenses, vendors }: ExpensesClientProps
       setIsLoading(false)
     }
   }
-
+ 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this expense?")) return
-
     try {
       const { error } = await supabase.from("expenses").delete().eq("id", id)
 
       if (error) throw error
 
-      setExpenses(expenses.filter((e) => e.id !== id))
+      await fetchExpenses() // Re-fetch data after successful delete
       router.refresh()
     } catch (error) {
       console.error("Error deleting expense:", error)
@@ -325,14 +334,19 @@ export function ExpensesClient({ initialExpenses, vendors }: ExpensesClientProps
                         <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(record)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(record.id)}
-                          className="text-red-500 hover:text-red-700"
+                        <ConfirmationModal
+                          title="Confirm Deletion"
+                          description="Are you sure you want to delete this expense record? This action cannot be undone."
+                          onConfirm={() => handleDelete(record.id)}
                         >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </ConfirmationModal>
                       </div>
                     </TableCell>
                   </TableRow>

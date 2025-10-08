@@ -23,6 +23,7 @@ import { formatCurrency } from "@/lib/currency"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
+import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
 type Animal = {
   id: string
@@ -60,6 +61,15 @@ export function AnimalsClient({ initialAnimals, vendors }: AnimalsClientProps) {
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const router = useRouter()
   const supabase = createClient()
+
+  const fetchAnimals = async () => {
+    const { data, error } = await supabase.from("animals").select("*,vendors(*)").order("date_acquired", { ascending: false })
+    if (error) {
+      console.error("Error fetching animals:", error)
+    } else {
+      setAnimals(data)
+    }
+  }
 
   const [formData, setFormData] = useState({
     tag_number: "",
@@ -157,8 +167,9 @@ export function AnimalsClient({ initialAnimals, vendors }: AnimalsClientProps) {
 
         if (error) throw error
       }
-
+ 
       handleCloseDialog()
+      await fetchAnimals() // Re-fetch data after successful CRUD
       router.refresh()
     } catch (error) {
       console.error("Error saving animal:", error)
@@ -166,16 +177,14 @@ export function AnimalsClient({ initialAnimals, vendors }: AnimalsClientProps) {
       setIsLoading(false)
     }
   }
-
+ 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this animal?")) return
-
     try {
       const { error } = await supabase.from("animals").delete().eq("id", id)
 
       if (error) throw error
 
-      setAnimals(animals.filter((a) => a.id !== id))
+      await fetchAnimals() // Re-fetch data after successful delete
       router.refresh()
     } catch (error) {
       console.error("Error deleting animal:", error)
@@ -333,14 +342,19 @@ export function AnimalsClient({ initialAnimals, vendors }: AnimalsClientProps) {
                         <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(animal)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(animal.id)}
-                          className="text-red-500 hover:text-red-700"
+                        <ConfirmationModal
+                          title="Confirm Deletion"
+                          description="Are you sure you want to delete this animal? This action cannot be undone."
+                          onConfirm={() => handleDelete(animal.id)}
                         >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </ConfirmationModal>
                       </div>
                     </TableCell>
                   </TableRow>

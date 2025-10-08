@@ -23,6 +23,7 @@ import { formatCurrency } from "@/lib/currency"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
+import { ConfirmationModal } from "@/components/ui/confirmation-modal"
 
 type SalesRecord = {
   id: string
@@ -62,6 +63,15 @@ export function SalesClient({ initialSales, vendors }: SalesClientProps) {
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const router = useRouter()
   const supabase = createClient()
+
+  const fetchSales = async () => {
+    const { data, error } = await supabase.from("sales").select("*, vendors(*)").order("sale_date", { ascending: false })
+    if (error) {
+      console.error("Error fetching sales records:", error)
+    } else {
+      setSales(data)
+    }
+  }
 
   const [formData, setFormData] = useState({
     sale_date: new Date().toISOString().split("T")[0],
@@ -157,25 +167,24 @@ export function SalesClient({ initialSales, vendors }: SalesClientProps) {
 
         if (error) throw error
       }
-
-      handleCloseDialog()
-      router.refresh()
-    } catch (error) {
-      console.error("Error saving sales record:", error)
+ 
+       handleCloseDialog()
+       await fetchSales() // Re-fetch data after successful CRUD
+       router.refresh()
+     } catch (error) {
+       console.error("Error saving sales record:", error)
     } finally {
       setIsLoading(false)
     }
   }
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this sales record?")) return
-
-    try {
-      const { error } = await supabase.from("sales").delete().eq("id", id)
+ 
+   const handleDelete = async (id: string) => {
+     try {
+       const { error } = await supabase.from("sales").delete().eq("id", id)
 
       if (error) throw error
 
-      setSales(sales.filter((s) => s.id !== id))
+      await fetchSales() // Re-fetch data after successful delete
       router.refresh()
     } catch (error) {
       console.error("Error deleting sales record:", error)
@@ -334,14 +343,19 @@ export function SalesClient({ initialSales, vendors }: SalesClientProps) {
                         <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(record)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(record.id)}
-                          className="text-red-500 hover:text-red-700"
+                        <ConfirmationModal
+                          title="Confirm Deletion"
+                          description="Are you sure you want to delete this sales record? This action cannot be undone."
+                          onConfirm={() => handleDelete(record.id)}
                         >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </ConfirmationModal>
                       </div>
                     </TableCell>
                   </TableRow>
