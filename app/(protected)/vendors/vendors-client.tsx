@@ -22,6 +22,7 @@ import { Plus, Search, Edit, Trash2, Store, Users, ShoppingCart } from "lucide-r
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
+import PageHeader from "@/components/page-header"
 
 import { Vendor } from "@/types/vendor"
 
@@ -205,16 +206,12 @@ export function VendorsClient({ initialVendors }: VendorsClientProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Vendor Management</h1>
-          <p className="text-muted-foreground">Manage your farm's suppliers and customers</p>
-        </div>
-        <Button onClick={() => handleOpenDialog()}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Vendor
-        </Button>
-      </div>
+      <PageHeader
+        title="Vendor Management"
+        description="Manage your farm's suppliers and customers"
+        buttonText="Add Vendor"
+        onButtonClick={() => handleOpenDialog()}
+      />
 
       {/* Statistics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

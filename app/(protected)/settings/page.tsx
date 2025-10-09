@@ -21,6 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Bell, Shield, Database, Plus, Edit, Trash2, Save, Building, MapPin, Phone, Mail } from "lucide-react"
+import PageHeader from "@/components/page-header"
 
 interface Employee {
   id: string
@@ -138,12 +139,7 @@ export default function SettingsPage() {
 
   return (
     <div className="flex-1 space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Settings</h1>
-          <p className="text-muted-foreground">Manage your farm settings and user accounts</p>
-        </div>
-      </div>
+      <PageHeader title="Settings" description="Manage your farm settings and user accounts" />
 
       <Tabs defaultValue="farm" className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">

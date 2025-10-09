@@ -20,6 +20,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge"
 import { Plus, Search, Edit, Trash2, DollarSign, ShoppingCart, TrendingUp, Users } from "lucide-react"
 import { formatCurrency } from "@/lib/currency"
+import PageHeader from "@/components/page-header"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
@@ -208,16 +209,12 @@ export function SalesClient({ initialSales, vendors }: SalesClientProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Sales Management</h1>
-          <p className="text-muted-foreground">Track and manage your farm's sales transactions</p>
-        </div>
-        <Button onClick={() => handleOpenDialog()} className="gap-2">
-          <Plus className="h-4 w-4" />
-          Add Sale Record
-        </Button>
-      </div>
+      <PageHeader
+        title="Sales Management"
+        description="Track and manage your farm's sales transactions"
+        buttonText="Add Sale Record"
+        onButtonClick={() => handleOpenDialog()}
+      />
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

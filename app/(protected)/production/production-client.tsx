@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, Search, Edit, Trash2, Package, Egg, Beef } from "lucide-react"
+import PageHeader from "@/components/page-header"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
@@ -173,16 +174,12 @@ export function ProductionClient({ initialProduction }: ProductionClientProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Production Management</h1>
-          <p className="text-muted-foreground">Track and manage your farm's production records</p>
-        </div>
-        <Button onClick={() => handleOpenDialog()} className="gap-2">
-          <Plus className="h-4 w-4" />
-          Add Production Record
-        </Button>
-      </div>
+      <PageHeader
+        title="Production Management"
+        description="Track and manage your farm's production records"
+        buttonText="Add Production Record"
+        onButtonClick={() => handleOpenDialog()}
+      />
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

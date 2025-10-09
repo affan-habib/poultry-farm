@@ -24,6 +24,7 @@ import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
 import { ConfirmationModal } from "@/components/ui/confirmation-modal"
+import PageHeader from "@/components/page-header"
 
 import { Animal, Vendor } from "@/types/animal"
 
@@ -207,16 +208,12 @@ export function AnimalsClient({ initialAnimals, vendors }: AnimalsClientProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Animals Management</h1>
-          <p className="text-muted-foreground">Manage your poultry inventory and health records</p>
-        </div>
-        <Button onClick={() => handleOpenDialog()} className="gap-2">
-          <Plus className="h-4 w-4" />
-          Add Animal
-        </Button>
-      </div>
+      <PageHeader
+        title="Animals Management"
+        description="Manage your poultry inventory and health records"
+        buttonText="Add Animal"
+        onButtonClick={() => handleOpenDialog()}
+      />
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

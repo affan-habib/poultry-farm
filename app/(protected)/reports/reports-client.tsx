@@ -25,6 +25,7 @@ import {
 } from "recharts"
 import { Download, FileText, TrendingUp, TrendingDown, DollarSign, Calendar } from "lucide-react"
 import { formatCurrency } from "@/lib/currency"
+import PageHeader from "@/components/page-header"
 
 type Animal = {
   id: string
@@ -95,29 +96,7 @@ export function ReportsClient({ animals, production, sales, expenses }: ReportsC
 
   return (
     <div className="flex-1 space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Reports & Analytics</h1>
-          <p className="text-muted-foreground">Comprehensive insights into your farm's performance</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="1month">Last Month</SelectItem>
-              <SelectItem value="3months">Last 3 Months</SelectItem>
-              <SelectItem value="6months">Last 6 Months</SelectItem>
-              <SelectItem value="1year">Last Year</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" onClick={() => handleExportReport("pdf")}>
-            <Download className="h-4 w-4 mr-2" />
-            Export PDF
-          </Button>
-        </div>
-      </div>
+      <PageHeader title="Reports & Analytics" description="Comprehensive insights into your farm's performance" />
 
       {/* Key Metrics Cards */}
       <div className="grid gap-4 md:grid-cols-4">
@@ -234,7 +213,7 @@ export function ReportsClient({ animals, production, sales, expenses }: ReportsC
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={({ category, percent }) => `${category} ${(percent * 100).toFixed(0)}%`}
+                        label={({ category, percent }) => `${category} ${((percent as number) * 100).toFixed(0)}%`}
                         outerRadius={80}
                         fill="#8884d8"
                         dataKey="amount"
@@ -394,7 +373,7 @@ export function ReportsClient({ animals, production, sales, expenses }: ReportsC
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={({ status, percent }) => `${status} ${(percent * 100).toFixed(0)}%`}
+                        label={({ status, percent }) => `${status} ${((percent as number) * 100).toFixed(0)}%`}
                         outerRadius={80}
                         fill="#8884d8"
                         dataKey="count"
