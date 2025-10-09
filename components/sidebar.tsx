@@ -44,14 +44,14 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
 
   return (
     <div className={cn(
-      "flex h-full flex-col bg-card border-r border-border transition-all duration-300",
+      "flex h-full flex-col border-r border-border transition-all duration-300 bg-gradient-to-b from-gray-900 to-black text-white",
       isCollapsed ? "w-16" : "w-64"
     )}>
       <div className="flex h-16 items-center justify-center px-3 border-b border-border">
         <div className="flex items-center gap-2">
           <Bird className="h-8 w-8 text-primary flex-shrink-0" />
           {!isCollapsed && (
-            <span className="text-xl font-bold text-foreground">FarmPro</span>
+            <span className="text-xl font-bold">FarmPro</span>
           )}
         </div>
       </div>
@@ -67,7 +67,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 isActive
                   ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                  : "hover:bg-gray-800",
                 isCollapsed && "justify-center"
               )}
               title={isCollapsed ? item.name : undefined}
