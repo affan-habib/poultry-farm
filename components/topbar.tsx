@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useOutsideClick } from "@/hooks/use-outside-click"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Menu, User, LogOut } from "lucide-react"
@@ -16,6 +17,7 @@ export function Topbar({ onMenuToggle }: TopbarProps) {
   const { user, signOut } = useAuth() // Assuming useAuth provides user object and signOut function
   const router = useRouter()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const ref = useOutsideClick(() => setIsDropdownOpen(false))
 
   const handleLogout = async () => {
     await signOut()
@@ -48,7 +50,7 @@ export function Topbar({ onMenuToggle }: TopbarProps) {
           </Button>
           
           {isDropdownOpen && (
-            <div className="absolute right-0 top-10 z-50 min-w-[8rem] rounded-md border border-border bg-popover p-1 shadow-md">
+            <div ref={ref} className="absolute right-0 top-10 z-50 min-w-[12rem] rounded-md border border-border bg-popover p-1 shadow-md">
               <div className="px-2 py-1.5 text-sm font-medium text-popover-foreground">
                 My Account
               </div>

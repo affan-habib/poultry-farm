@@ -54,18 +54,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-6">
-        {/* Logo and Title */}
-        <div className="text-center space-y-2">
-          <div className="flex justify-center">
-            <div className="flex items-center gap-2 p-3 rounded-full bg-primary/10">
-              <Bird className="h-8 w-8 text-primary" />
-            </div>
-          </div>
-          <h1 className="text-3xl font-bold text-foreground">FarmPro</h1>
-          <p className="text-muted-foreground">Sign in to your farm management account</p>
-        </div>
+       
 
         {/* Login Form */}
         <Card>
