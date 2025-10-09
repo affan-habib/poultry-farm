@@ -267,93 +267,91 @@ export function ExpensesClient({ initialExpenses, vendors }: ExpensesClientProps
       </div>
 
       {/* Expenses Table */}
-      <Card>
-        <CardHeader>
+      <div>
+        <CardHeader className="px-0 pb-4">
           <CardTitle>Expense Records</CardTitle>
           <CardDescription>Complete history of all farm expenses and operational costs.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Vendor</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Payment Method</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedExpenses.length === 0 ? (
+        <Card>
+          <CardContent>
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center text-muted-foreground">
-                    No expenses found. Add your first expense to get started.
-                  </TableCell>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Vendor</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Payment Method</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ) : (
-                paginatedExpenses.map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell>{new Date(record.expense_date).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <Badge className={getCategoryColor(record.category)}>{record.category}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{record.description}</div>
-                        {record.receipt_number && (
-                          <div className="text-sm text-muted-foreground">Receipt: {record.receipt_number}</div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>{record.vendors?.name || "-"}</TableCell>
-                    <TableCell className="font-medium">{formatCurrency(record.amount)}</TableCell>
-                    <TableCell className="capitalize">{record.payment_method.replace("_", " ")}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(record)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <ConfirmationModal
-                          title="Confirm Deletion"
-                          description="Are you sure you want to delete this expense record? This action cannot be undone."
-                          onConfirm={() => handleDelete(record.id)}
-                        >
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </ConfirmationModal>
-                      </div>
+              </TableHeader>
+              <TableBody>
+                {paginatedExpenses.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      No expenses found. Add your first expense to get started.
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <div className="text-sm text-muted-foreground">
-            Showing {paginatedExpenses.length} of {filteredExpenses.length} expenses
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} variant="outline">
-              Previous
-            </Button>
-            <Button
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              variant="outline"
-            >
-              Next
-            </Button>
-          </div>
-        </CardFooter>
-      </Card>
+                ) : (
+                  paginatedExpenses.map((record, index) => (
+                    <TableRow key={record.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
+                      <TableCell>{new Date(record.expense_date).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <Badge className={getCategoryColor(record.category)}>{record.category}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          <div className="font-medium">{record.description}</div>
+                          {record.receipt_number && (
+                            <div className="text-sm text-muted-foreground">Receipt: {record.receipt_number}</div>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>{record.vendors?.name || "-"}</TableCell>
+                      <TableCell className="font-medium">{formatCurrency(record.amount)}</TableCell>
+                      <TableCell className="capitalize">{record.payment_method.replace("_", " ")}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(record)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <ConfirmationModal
+                            title="Confirm Deletion"
+                            description="Are you sure you want to delete this expense record? This action cannot be undone."
+                            onConfirm={() => handleDelete(record.id)}
+                          >
+                            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </ConfirmationModal>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <div className="text-sm text-muted-foreground">
+              Showing {paginatedExpenses.length} of {filteredExpenses.length} expenses
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} variant="outline">
+                Previous
+              </Button>
+              <Button
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                variant="outline"
+              >
+                Next
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
 
       {/* Add/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

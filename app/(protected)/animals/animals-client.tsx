@@ -273,92 +273,90 @@ export function AnimalsClient({ initialAnimals, vendors }: AnimalsClientProps) {
       </div>
 
       {/* Animals Table */}
-      <Card>
-        <CardHeader>
+      <div>
+        <CardHeader className="px-0 pb-4">
           <CardTitle>Animal Records</CardTitle>
           <CardDescription>
             Complete list of all animals in your farm with their details and health status.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Tag Number</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Breed</TableHead>
-                <TableHead>Age (months)</TableHead>
-                <TableHead>Weight (kg)</TableHead>
-                <TableHead>Health Status</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Cost</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedAnimals.length === 0 ? (
+        <Card>
+          <CardContent>
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center text-muted-foreground">
-                    No animals found. Add your first animal to get started.
-                  </TableCell>
+                  <TableHead>Tag Number</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Breed</TableHead>
+                  <TableHead>Age (months)</TableHead>
+                  <TableHead>Weight (kg)</TableHead>
+                  <TableHead>Health Status</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Cost</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ) : (
-                paginatedAnimals.map((animal) => (
-                  <TableRow key={animal.id}>
-                    <TableCell className="font-medium">{animal.tag_number}</TableCell>
-                    <TableCell className="capitalize">{animal.animal_type}</TableCell>
-                    <TableCell>{animal.breed}</TableCell>
-                    <TableCell>{animal.age_months || "-"}</TableCell>
-                    <TableCell>{animal.weight_kg || "-"}</TableCell>
-                    <TableCell>
-                      <Badge className={getHealthStatusColor(animal.health_status)}>{animal.health_status}</Badge>
-                    </TableCell>
-                    <TableCell>{animal.location || "-"}</TableCell>
-                    <TableCell>{animal.purchase_price ? formatCurrency(animal.purchase_price) : "-"}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(animal)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <ConfirmationModal
-                          title="Confirm Deletion"
-                          description="Are you sure you want to delete this animal? This action cannot be undone."
-                          onConfirm={() => handleDelete(animal.id)}
-                        >
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </ConfirmationModal>
-                      </div>
+              </TableHeader>
+              <TableBody>
+                {paginatedAnimals.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={9} className="text-center text-muted-foreground">
+                      No animals found. Add your first animal to get started.
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <div className="text-sm text-muted-foreground">
-            Showing {paginatedAnimals.length} of {filteredAnimals.length} animals
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} variant="outline">
-              Previous
-            </Button>
-            <Button
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              variant="outline"
-            >
-              Next
-            </Button>
-          </div>
-        </CardFooter>
-      </Card>
+                ) : (
+                  paginatedAnimals.map((animal, index) => (
+                    <TableRow key={animal.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
+                      <TableCell className="font-medium">{animal.tag_number}</TableCell>
+                      <TableCell className="capitalize">{animal.animal_type}</TableCell>
+                      <TableCell>{animal.breed}</TableCell>
+                      <TableCell>{animal.age_months || "-"}</TableCell>
+                      <TableCell>{animal.weight_kg || "-"}</TableCell>
+                      <TableCell>
+                        <Badge className={getHealthStatusColor(animal.health_status)}>{animal.health_status}</Badge>
+                      </TableCell>
+                      <TableCell>{animal.location || "-"}</TableCell>
+                      <TableCell>{animal.purchase_price ? formatCurrency(animal.purchase_price) : "-"}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(animal)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <ConfirmationModal
+                            title="Confirm Deletion"
+                            description="Are you sure you want to delete this animal? This action cannot be undone."
+                            onConfirm={() => handleDelete(animal.id)}
+                          >
+                            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </ConfirmationModal>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <div className="text-sm text-muted-foreground">
+              Showing {paginatedAnimals.length} of {filteredAnimals.length} animals
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} variant="outline">
+                Previous
+              </Button>
+              <Button
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                variant="outline"
+              >
+                Next
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
 
       {/* Add/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

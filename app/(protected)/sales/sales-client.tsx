@@ -274,90 +274,88 @@ export function SalesClient({ initialSales, vendors }: SalesClientProps) {
       </div>
 
       {/* Sales Table */}
-      <Card>
-        <CardHeader>
+      <div>
+        <CardHeader className="px-0 pb-4">
           <CardTitle>Sales Records</CardTitle>
           <CardDescription>Complete history of all sales transactions.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Product</TableHead>
-                <TableHead>Quantity</TableHead>
-                <TableHead>Unit Price</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Payment Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedSales.length === 0 ? (
+        <Card>
+          <CardContent>
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center text-muted-foreground">
-                    No sales records found. Add your first sale to get started.
-                  </TableCell>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Product</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Unit Price</TableHead>
+                  <TableHead>Total</TableHead>
+                  <TableHead>Payment Status</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ) : (
-                paginatedSales.map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell>{new Date(record.sale_date).toLocaleDateString()}</TableCell>
-                    <TableCell>{record.vendors?.name || "Walk-in Customer"}</TableCell>
-                    <TableCell className="capitalize">{record.product_type}</TableCell>
-                    <TableCell>
-                      {record.quantity} {record.unit}
-                    </TableCell>
-                    <TableCell>{formatCurrency(record.unit_price)}</TableCell>
-                    <TableCell className="font-medium">{formatCurrency(record.total_amount)}</TableCell>
-                    <TableCell>
-                      <Badge className={getPaymentStatusColor(record.payment_status)}>{record.payment_status}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(record)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <ConfirmationModal
-                          title="Confirm Deletion"
-                          description="Are you sure you want to delete this sales record? This action cannot be undone."
-                          onConfirm={() => handleDelete(record.id)}
-                        >
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </ConfirmationModal>
-                      </div>
+              </TableHeader>
+              <TableBody>
+                {paginatedSales.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center text-muted-foreground">
+                      No sales records found. Add your first sale to get started.
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <div className="text-sm text-muted-foreground">
-            Showing {paginatedSales.length} of {filteredSales.length} sales
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} variant="outline">
-              Previous
-            </Button>
-            <Button
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              variant="outline"
-            >
-              Next
-            </Button>
-          </div>
-        </CardFooter>
-      </Card>
+                ) : (
+                  paginatedSales.map((record, index) => (
+                    <TableRow key={record.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
+                      <TableCell>{new Date(record.sale_date).toLocaleDateString()}</TableCell>
+                      <TableCell>{record.vendors?.name || "Walk-in Customer"}</TableCell>
+                      <TableCell className="capitalize">{record.product_type}</TableCell>
+                      <TableCell>
+                        {record.quantity} {record.unit}
+                      </TableCell>
+                      <TableCell>{formatCurrency(record.unit_price)}</TableCell>
+                      <TableCell className="font-medium">{formatCurrency(record.total_amount)}</TableCell>
+                      <TableCell>
+                        <Badge className={getPaymentStatusColor(record.payment_status)}>{record.payment_status}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(record)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <ConfirmationModal
+                            title="Confirm Deletion"
+                            description="Are you sure you want to delete this sales record? This action cannot be undone."
+                            onConfirm={() => handleDelete(record.id)}
+                          >
+                            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </ConfirmationModal>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <div className="text-sm text-muted-foreground">
+              Showing {paginatedSales.length} of {filteredSales.length} sales
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} variant="outline">
+                Previous
+              </Button>
+              <Button
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                variant="outline"
+              >
+                Next
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
 
       {/* Add/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

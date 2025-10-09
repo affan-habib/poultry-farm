@@ -257,93 +257,91 @@ export function IncomeClient({ initialIncome }: IncomeClientProps) {
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
+      <div>
+        <CardHeader className="px-0 pb-4">
           <CardTitle>Income Records</CardTitle>
           <CardDescription>Complete history of all farm income and revenue.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Source</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Payment Method</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedIncome.length === 0 ? (
+        <Card>
+          <CardContent>
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center text-muted-foreground">
-                    No income records found. Add your first record to get started.
-                  </TableCell>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Source</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Payment Method</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ) : (
-                paginatedIncome.map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell>{new Date(record.income_date).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <Badge className={getSourceColor(record.source)}>{record.source.replace("_", " ")}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{record.description}</div>
-                        {record.reference_number && (
-                          <div className="text-sm text-muted-foreground">Ref: {record.reference_number}</div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>{record.customer_name || "-"}</TableCell>
-                    <TableCell className="font-medium">{formatCurrency(record.amount)}</TableCell>
-                    <TableCell className="capitalize">{record.payment_method.replace("_", " ")}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(record)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <ConfirmationModal
-                          title="Confirm Deletion"
-                          description="Are you sure you want to delete this income record? This action cannot be undone."
-                          onConfirm={() => handleDelete(record.id)}
-                        >
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </ConfirmationModal>
-                      </div>
+              </TableHeader>
+              <TableBody>
+                {paginatedIncome.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      No income records found. Add your first record to get started.
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <div className="text-sm text-muted-foreground">
-            Showing {paginatedIncome.length} of {filteredIncome.length} income records
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} variant="outline">
-              Previous
-            </Button>
-            <Button
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              variant="outline"
-            >
-              Next
-            </Button>
-          </div>
-        </CardFooter>
-      </Card>
+                ) : (
+                  paginatedIncome.map((record, index) => (
+                    <TableRow key={record.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
+                      <TableCell>{new Date(record.income_date).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <Badge className={getSourceColor(record.source)}>{record.source.replace("_", " ")}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          <div className="font-medium">{record.description}</div>
+                          {record.reference_number && (
+                            <div className="text-sm text-muted-foreground">Ref: {record.reference_number}</div>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>{record.customer_name || "-"}</TableCell>
+                      <TableCell className="font-medium">{formatCurrency(record.amount)}</TableCell>
+                      <TableCell className="capitalize">{record.payment_method.replace("_", " ")}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(record)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <ConfirmationModal
+                            title="Confirm Deletion"
+                            description="Are you sure you want to delete this income record? This action cannot be undone."
+                            onConfirm={() => handleDelete(record.id)}
+                          >
+                            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </ConfirmationModal>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <div className="text-sm text-muted-foreground">
+              Showing {paginatedIncome.length} of {filteredIncome.length} income records
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} variant="outline">
+                Previous
+              </Button>
+              <Button
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                variant="outline"
+              >
+                Next
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">

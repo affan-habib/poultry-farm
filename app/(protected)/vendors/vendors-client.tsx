@@ -279,78 +279,84 @@ export function VendorsClient({ initialVendors }: VendorsClientProps) {
       </Card>
 
       {/* Vendors Table */}
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[200px]">Name</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Notes</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedVendors.length === 0 ? (
+      <div>
+        <CardHeader className="px-0 pb-4">
+          <CardTitle>Vendor List</CardTitle>
+          <CardDescription>Search and filter your vendors</CardDescription>
+        </CardHeader>
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground">
-                    No vendors found. Add your first vendor to get started.
-                  </TableCell>
+                  <TableHead className="w-[200px]">Name</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Notes</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ) : (
-                paginatedVendors.map((vendor) => (
-                  <TableRow key={vendor.id}>
-                    <TableCell className="font-medium">{vendor.name}</TableCell>
-                    <TableCell>{getVendorTypeBadge(vendor.vendor_type)}</TableCell>
-                    <TableCell>
-                      <div>
-                        <div>{vendor.contact_person}</div>
-                        <div className="text-sm text-muted-foreground">{vendor.phone}</div>
-                        <div className="text-sm text-muted-foreground">{vendor.email}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="max-w-[300px] truncate">{vendor.notes || "-"}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(vendor)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <ConfirmationModal
-                          title="Confirm Deletion"
-                          description="Are you sure you want to delete this vendor? This action cannot be undone."
-                          onConfirm={() => handleDelete(vendor.id)}
-                        >
-                          <Button variant="ghost" size="sm">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </ConfirmationModal>
-                      </div>
+              </TableHeader>
+              <TableBody>
+                {paginatedVendors.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">
+                      No vendors found. Add your first vendor to get started.
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <div className="text-sm text-muted-foreground">
-            Showing {paginatedVendors.length} of {filteredVendors.length} vendors
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} variant="outline">
-              Previous
-            </Button>
-            <Button
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              variant="outline"
-            >
-              Next
-            </Button>
-          </div>
-        </CardFooter>
-      </Card>
+                ) : (
+                  paginatedVendors.map((vendor, index) => (
+                    <TableRow key={vendor.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
+                      <TableCell className="font-medium">{vendor.name}</TableCell>
+                      <TableCell>{getVendorTypeBadge(vendor.vendor_type)}</TableCell>
+                      <TableCell>
+                        <div>
+                          <div>{vendor.contact_person}</div>
+                          <div className="text-sm text-muted-foreground">{vendor.phone}</div>
+                          <div className="text-sm text-muted-foreground">{vendor.email}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="max-w-[300px] truncate">{vendor.notes || "-"}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(vendor)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <ConfirmationModal
+                            title="Confirm Deletion"
+                            description="Are you sure you want to delete this vendor? This action cannot be undone."
+                            onConfirm={() => handleDelete(vendor.id)}
+                          >
+                            <Button variant="ghost" size="sm">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </ConfirmationModal>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <div className="text-sm text-muted-foreground">
+              Showing {paginatedVendors.length} of {filteredVendors.length} vendors
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} variant="outline">
+                Previous
+              </Button>
+              <Button
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                variant="outline"
+              >
+                Next
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
 
       {/* Add/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

@@ -234,72 +234,70 @@ export function EmployeesClient({ initialEmployees }: EmployeesClientProps) {
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
+      <div>
+        <CardHeader className="px-0 pb-4">
           <CardTitle>Employee List</CardTitle>
           <CardDescription>A complete list of all employees at your farm.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Position</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Hire Date</TableHead>
-                <TableHead>Salary</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredEmployees.length === 0 ? (
+        <Card>
+          <CardContent>
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center text-muted-foreground">
-                    No employees found. Add your first employee to get started.
-                  </TableCell>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Position</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Hire Date</TableHead>
+                  <TableHead>Salary</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ) : (
-                filteredEmployees.map((employee) => (
-                  <TableRow key={employee.id}>
-                    <TableCell className="font-medium">{employee.name}</TableCell>
-                    <TableCell>{employee.position}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-col">
-                        <span>{employee.phone}</span>
-                        <span className="text-sm text-muted-foreground">{employee.email}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>{new Date(employee.hire_date).toLocaleDateString()}</TableCell>
-                    <TableCell>{employee.salary ? formatCurrency(employee.salary) : "-"}</TableCell>
-                    <TableCell>{getStatusBadge(employee.status)}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(employee)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <ConfirmationModal
-                          title="Confirm Deletion"
-                          description="Are you sure you want to delete this employee? This action cannot be undone."
-                          onConfirm={() => handleDelete(employee.id)}
-                        >
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </ConfirmationModal>
-                      </div>
+              </TableHeader>
+              <TableBody>
+                {filteredEmployees.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      No employees found. Add your first employee to get started.
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+                ) : (
+                  filteredEmployees.map((employee, index) => (
+                    <TableRow key={employee.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
+                      <TableCell className="font-medium">{employee.name}</TableCell>
+                      <TableCell>{employee.position}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span>{employee.phone}</span>
+                          <span className="text-sm text-muted-foreground">{employee.email}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>{new Date(employee.hire_date).toLocaleDateString()}</TableCell>
+                      <TableCell>{employee.salary ? formatCurrency(employee.salary) : "-"}</TableCell>
+                      <TableCell>{getStatusBadge(employee.status)}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button variant="ghost" size="sm" onClick={() => handleOpenDialog(employee)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <ConfirmationModal
+                            title="Confirm Deletion"
+                            description="Are you sure you want to delete this employee? This action cannot be undone."
+                            onConfirm={() => handleDelete(employee.id)}
+                          >
+                            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </ConfirmationModal>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
